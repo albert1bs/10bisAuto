@@ -66,7 +66,8 @@ Add the following **Repository secrets** (one by one):
 | `ACCESS_TOKEN` | Your 10bis access token | `eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9...` |
 | `REFRESH_TOKEN` | Your 10bis refresh token | `def50200a1b2c3d4e5f6...` |
 | `AMOUNT` | Credit amount to load daily | `100` |
-| `MONEYCARD_ID` | Your money card ID | `12345678` |
+| `MONEYCARD_ID` | Your money card ID (legacy v1 API) | `12345678` |
+| `ENCRYPTED_MONEYCARD_ID` | Your encrypted money card ID — when set, the v3 API is used instead of v1 | `reqNAypWc234seeCmFiSQ==` |
 | `PERSONAL_ACCESS_TOKEN` | GitHub PAT from step 2 | `ghp_xxxxxxxxxxxxxxxxxxxx` |
 
 **Visual Guide - What you should see:**
@@ -118,8 +119,10 @@ Settings Page (left sidebar):
    - `Authorization: Bearer YOUR_ACCESS_TOKEN` (copy the part after "Bearer ")
    - In cookies, look for `RefreshToken=YOUR_REFRESH_TOKEN`
 7. **Find your Money Card ID**:
-   - Look for API calls to payment endpoints
-   - Check the request body for `moneycardIdToCharge`
+   - Load credit once manually on the site
+   - Click the `LoadTenbisCredit` request (`/api/v3/Payments/LoadTenbisCredit`)
+   - Copy the `encryptedMoneycardIdToCharge` value from the request payload → save as `ENCRYPTED_MONEYCARD_ID`
+   - (Legacy v1: the numeric `moneycardIdToCharge` → `MONEYCARD_ID`)
 
 ### 5. Verify the Setup
 
