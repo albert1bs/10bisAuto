@@ -73,6 +73,7 @@ Follow the [`GITHUB-ACTIONS-SETUP.md`](GITHUB-ACTIONS-SETUP.md) guide to configu
 - `REFRESH_TOKEN`
 - `AMOUNT`
 - `MONEYCARD_ID`
+- `ENCRYPTED_MONEYCARD_ID` (enables the v3 credit-loading API — see [Switching to v3](#switching-to-v3-encrypted_moneycard_id))
 - `TEAMS_WEBHOOK_URL` (optional)
 - `PERSONAL_ACCESS_TOKEN`
 
@@ -290,7 +291,19 @@ Add debug logging by modifying the log level in `utils.js` or check the detailed
 The system interacts with these 10bis API endpoints:
 
 - **Token Refresh**: `POST https://api.10bis.co.il/api/v1/Authentication/RefreshToken`
-- **Credit Loading**: `PATCH https://api.10bis.co.il/api/v1/Payments/LoadTenbisCredit`
+- **Credit Loading (v3)**: `PATCH https://api.10bis.co.il/api/v3/Payments/LoadTenbisCredit` — `github-load-credit-v3.js`, body `{ amount: "<string>", encryptedMoneycardIdToCharge }`
+- **Credit Loading (legacy v1)**: `PATCH https://api.10bis.co.il/api/v1/Payments/LoadTenbisCredit` — `github-load-credit.js`, body `{ amount: <number>, moneycardIdToCharge: <number> }`
+
+The **Load Credit** workflow runs the v3 script when the `ENCRYPTED_MONEYCARD_ID` secret is set, and the legacy v1 script otherwise.
+
+### Switching to v3 (ENCRYPTED_MONEYCARD_ID)
+
+1. Log in to 10bis in the browser and open DevTools (F12) → **Network**
+2. Load credit once manually
+3. Click the `LoadTenbisCredit` request and copy the `encryptedMoneycardIdToCharge` value from the request payload (e.g. `reqNAypWc234seeCmFiSQ==`)
+4. Add it as a new repository secret named `ENCRYPTED_MONEYCARD_ID` (leave `MONEYCARD_ID` as is)
+
+To go back to v1, delete the `ENCRYPTED_MONEYCARD_ID` secret.
 
 ## Schedule Details
 

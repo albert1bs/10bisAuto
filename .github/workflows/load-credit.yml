@@ -118,12 +118,20 @@ jobs:
 
       - name: Run credit loading with fresh tokens
         id: load-credit
-        run: node github-load-credit.js
+        run: |
+          if [ -n "$ENCRYPTED_MONEYCARD_ID" ]; then
+            echo "ENCRYPTED_MONEYCARD_ID is set - using v3 LoadTenbisCredit"
+            node github-load-credit-v3.js
+          else
+            echo "ENCRYPTED_MONEYCARD_ID not set - using legacy v1 LoadTenbisCredit"
+            node github-load-credit.js
+          fi
         env:
           ACCESS_TOKEN: ${{ steps.refresh.outputs.access_token || secrets.ACCESS_TOKEN }}
           REFRESH_TOKEN: ${{ steps.refresh.outputs.refresh_token || secrets.REFRESH_TOKEN }}
           AMOUNT: ${{ secrets.AMOUNT }}
           MONEYCARD_ID: ${{ secrets.MONEYCARD_ID }}
+          ENCRYPTED_MONEYCARD_ID: ${{ secrets.ENCRYPTED_MONEYCARD_ID }}
           TEAMS_WEBHOOK_URL: ${{ secrets.TEAMS_WEBHOOK_URL }}
 
       - name: Upload logs
